@@ -4,7 +4,7 @@
 # until the server comes back.
 set -eu
 cd "$(dirname "$0")"
-name=${NAME:-circuit-nfs}
+name=${CONTAINER_NAME:-circuit-nfs}
 podman=${PODMAN:-podman}
 for c in $($podman ps -a -q --filter "network=$name"); do
   [ "$($podman inspect -f '{{.Name}}' "$c")" = "$name" ] && continue
