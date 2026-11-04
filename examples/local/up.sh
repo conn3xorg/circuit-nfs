@@ -12,7 +12,7 @@ set -eu
 cd "$(dirname "$0")"
 port=${PORT:-2222}
 containerfile=${CONTAINERFILE:-Containerfile}
-name=${NAME:-circuit-nfs}
+name=${CONTAINER_NAME:-circuit-nfs}
 subnet=${SUBNET:-10.89.63}
 
 podman=${PODMAN:-podman}
