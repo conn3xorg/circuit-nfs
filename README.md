@@ -10,7 +10,7 @@ The server speaks NFSv4 only unless you ask for v3. That means one port, TCP 204
 
 ```hcl
 module "nfs" {
-  source = "github.com/conn3xorg/circuit-nfs?ref=v0.1.0"
+  source = "github.com/conn3xorg/circuit-nfs?ref=v0.1.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
