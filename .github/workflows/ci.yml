@@ -99,6 +99,18 @@ jobs:
             ls /mnt/public
             if touch /mnt/public/x; then exit 1; fi
             umount /mnt/public'
+      # Restarting the container boots systemd again, so this checks the
+      # server is enabled and serves its exports from the config on disk.
+      - name: Restart the host, then read the file back over NFS
+        working-directory: examples/local
+        run: |
+          sudo podman restart circuit-nfs
+          sudo podman exec circuit-nfs timeout 60 systemctl is-system-running --wait || true
+          sudo podman exec circuit-nfs-client10 sh -eu -c '
+            mount -t nfs4 -o vers=4.2 10.89.63.2:/srv/nfs/projects /mnt/projects
+            [ "$(cat /mnt/projects/from-client.txt)" = hello ]
+            umount /mnt/projects'
+          conn3x plan -detailed-exitcode
       - name: Clean up
         if: always()
         working-directory: examples/local
