@@ -10,7 +10,7 @@ The server speaks NFSv4 only unless you ask for v3. That means one port, TCP 204
 
 ```hcl
 module "nfs" {
-  source = "github.com/conn3xorg/circuit-nfs?ref=v0.2.0"
+  source = "github.com/conn3xorg/circuit-nfs?ref=v0.2.1"
 
   hosts                = { nas = "192.168.1.20" }
   ssh_private_key_file = "~/.ssh/id_ed25519"
@@ -157,7 +157,7 @@ An NFS server can't run in an unprivileged container, and it can't export a fold
 
 Rocky Linux 10, Fedora 45, Ubuntu 24.04 and Debian 13.
 
-**CI** applies [examples/local](examples/local) to each in a privileged container on amd64 and checks that the second plan has no changes. Two client containers on the same network then mount from it: the allowed client mounts `/srv/nfs/projects` over NFSv4.2 and writes a file, which shows on the server owned by `nobody`, and its NFSv3 mount is refused. The client that isn't on the list can't mount `/srv/nfs/projects`, and can mount the read-only `/srv/nfs/public` but not write to it. By hand, the same container runs also turned `nfs_v3` on (a v3 mount worked) and off again, and checked that an unknown option and a host name that doesn't resolve both fail the apply.
+**CI** applies [examples/local](examples/local) to each in a privileged container on amd64 and checks that the second plan has no changes. Two client containers on the same network then mount from it: the allowed client mounts `/srv/nfs/projects` over NFSv4.2 and writes a file, which shows on the server owned by `nobody`, and its NFSv3 mount is refused. The client that isn't on the list can't mount `/srv/nfs/projects`, and can mount the read-only `/srv/nfs/public` but not write to it. Then the server's container restarts, the allowed client mounts `/srv/nfs/projects` again and reads its file back, and the plan has no changes. By hand, the same container runs also turned `nfs_v3` on (a v3 mount worked) and off again, and checked that an unknown option and a host name that doesn't resolve both fail the apply.
 
 **Droplets** cover what containers can't: a real kernel, SELinux and reboots. An Ubuntu 24.04 server and a Rocky Linux 10 server with SELinux enforcing each exported `/srv/nfs/projects` to a third Ubuntu 24.04 droplet over the private network. That client mounted both with the `mount` step shown above and wrote to each; each server refused the other when it tried to mount, and both refused NFSv3. After rebooting all three, the plan had no changes, the client had both mounts back, NFSv3 was still off, and Rocky's audit log had no denials.
 
