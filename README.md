@@ -149,7 +149,7 @@ On Rocky Linux and Fedora with SELinux enforcing, the targeted policy turns on `
 
 ## Requirements
 
-Requires Conn3x v0.6.5 or later, systemd and a kernel with the NFS server (`nfsd`) on each host, with a package mirror the host can reach. The server comes from each distribution's own repositories; it needs an nfs-utils that reads `/etc/nfs.conf.d`, which all four distributions below ship.
+Requires Conn3x v0.28.0 or later, systemd and a kernel with the NFS server (`nfsd`) on each host, with a package mirror the host can reach. The server comes from each distribution's own repositories; it needs an nfs-utils that reads `/etc/nfs.conf.d`, which all four distributions below ship.
 
 An NFS server can't run in an unprivileged container, and it can't export a folder on overlayfs, which is what most container root file systems are. The local example works around both; a real host or VM needs neither.
 

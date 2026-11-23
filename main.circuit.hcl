@@ -107,8 +107,8 @@ circuit "nfs" {
   # rpc.nfsd only reads which versions to serve when it starts. This runs
   # on a host's first apply and whenever the drop-in changes.
   step "restart" {
-    command {
-      command  = "systemctl restart nfs-server"
+    service_action {
+      name     = "nfs-server"
       triggers = { conf = conn3x_file.nfs__conf[each.key].revision }
     }
   }
@@ -131,7 +131,7 @@ circuit "nfs" {
       command = "out=$(exportfs -ra 2>&1); if [ -n \"$out\" ]; then echo \"$out\" >&2; exit 1; fi; live=$(exportfs -s | awk '{print $1}'); for p in ${local.check_paths}; do printf '%s\\n' \"$live\" | grep -qxF \"$p\" || { echo \"$p is not exported\" >&2; exit 1; }; done"
       triggers = {
         exports = conn3x_file.nfs__exports[each.key].revision
-        restart = conn3x_command.nfs__restart[each.key].revision
+        restart = conn3x_service_action.nfs__restart[each.key].revision
       }
     }
   }
